@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kakao Books</title>
+    <link rel="stylesheet" href="searchBar.css" />
+  </head>
+  <body>
+    <h1
+      style="
+        color: #fee500;
+        text-align: center;
+        font-size: 100px;
+        margin-top: 260px;
+      "
+    >
+      카카오 책 검색
+    </h1>
+    <div class="wrap">
+      <div class="search">
+        <input
+          type="text"
+          class="searchTerm"
+          placeholder="원하시는 책 제목을 입력해주세요"
+          id="text"
+        />
+        <button
+          type="submit"
+          class="searchButton"
+          onclick="searchBook(document.querySelector('#text').value)"
+        >
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+    <p
+      style="
+        margin-top: 150px;
+        text-align: center;
+        color: white;
+        font-size: 30px;
+      "
+    ></p>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.js"
+      integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      function searchBook(title) {
+        document.querySelector("#text").value = "";
+        document.querySelector("p").innerHTML = "";
+        $.ajax({
+          method: "GET",
+          url: "https://dapi.kakao.com/v3/search/book?target=title",
+          data: { query: title },
+          headers: {
+            Authorization: "KakaoAK a5b7316dd47630419f32e3f471f99733",
+          },
+        }).done(function (msg) {
+          if (msg.documents[0]) {
+            const title = msg.documents[0].title;
+            const thumbnail = msg.documents[0].thumbnail;
+            const authors = msg.documents[0].authors;
+            $("p").append(
+              `<strong>${title}</strong><br><span style="font-size:15px;">-${authors}-</span><br>`
+            );
+            $("p").append(
+              `<img style="margin-top: 30px;" src="${thumbnail}"/>`
+            );
+          } else {
+            $("p").append(`책이 검색되지 않습니다`);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
